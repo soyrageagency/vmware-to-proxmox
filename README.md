@@ -317,6 +317,7 @@ Once you land on Proxmox, keep the momentum — these open‑source tools share 
 | Project | What it does |
 | --- | --- |
 | 🚚 **[VMware → Proxmox Toolkit (V2P)](https://github.com/soyrageagency/vmware-to-proxmox)** | *(you are here)* Inventory vCenter, score compatibility, estimate cost & time, plan disk conversion and export a professional PDF assessment. |
+| 🗺️ **[NetAtlas](https://github.com/soyrageagency/netatlas)** | Living infrastructure documentation — agentless discovery that auto-generates a network diagram, inventory, VLAN & service-dependency maps, and tells you what changed since last time. |
 | 🖧 **[Proxmox MCP Server](https://github.com/soyrageagency/proxmox-mcp-server)** | Chat with your fresh Proxmox VE cluster — nodes, VMs & LXC, snapshots and full guest CRUD, plus a tabbed terminal dashboard with an AI command bar. |
 | 🐳 **[Docker MCP Server](https://github.com/soyrageagency/docker-mcp-server)** | Chat with your Docker host — containers, logs, Compose, a live web panel and a TUI with an AI copilot. |
 
