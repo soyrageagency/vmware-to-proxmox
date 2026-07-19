@@ -1,0 +1,65 @@
+{
+  "name": "vmware-to-proxmox",
+  "version": "1.0.0",
+  "description": "V2P — VMware vSphere → Proxmox VE migration toolkit. Inventory vCenter, analyse compatibility, estimate cost & time, plan disk conversion, and generate a professional PDF assessment. CLI, interactive menu or click-through web. Built by SoyRage Agency.",
+  "type": "module",
+  "license": "SEE LICENSE IN LICENSE",
+  "author": "SoyRage Agency (https://soyrage.es/)",
+  "homepage": "https://soyrage.es/",
+  "funding": {
+    "type": "paypal",
+    "url": "https://www.paypal.com/paypalme/soyrageagency"
+  },
+  "keywords": [
+    "vmware",
+    "vsphere",
+    "vcenter",
+    "proxmox",
+    "proxmox-ve",
+    "migration",
+    "assessment",
+    "esxi",
+    "broadcom",
+    "virtualization",
+    "devops",
+    "qemu"
+  ],
+  "bin": {
+    "v2p": "dist/index.js"
+  },
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsc && node scripts/copy-public.mjs",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "assess": "node dist/index.js assess",
+    "menu": "node dist/index.js menu",
+    "web": "node dist/index.js web",
+    "demo": "node -e \"process.env.V2P_DEMO='true';import('./dist/index.js')\" assess",
+    "typecheck": "tsc --noEmit",
+    "smoke": "node scripts/smoke.mjs",
+    "shots": "node scripts/shots.mjs",
+    "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\""
+  },
+  "dependencies": {
+    "pdfkit": "^0.15.0",
+    "undici": "^6.19.8",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "@types/pdfkit": "^0.13.4",
+    "playwright": "^1.61.1",
+    "tsx": "^4.16.0",
+    "typescript": "^5.5.0"
+  }
+}

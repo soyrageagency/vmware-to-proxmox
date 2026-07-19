@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VMware → Proxmox Assessment · V2P by SoyRage Agency</title>
+    <!--
+      V2P — VMware to Proxmox Migration Toolkit · web UI
+      Crafted by SoyRage Agency — https://soyrage.es/
+      Attribution must remain intact (see LICENSE).
+    -->
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="watermark" aria-hidden="true"></div>
+
+    <header class="band">
+      <div class="brand">
+        <span class="logo">SOY<span class="accent">R</span>AGE</span>
+        <span class="sep">/</span>
+        <span class="title">VMware&nbsp;→&nbsp;Proxmox · <b>V2P</b></span>
+      </div>
+      <div class="src"><span id="src">—</span> <span id="demo" class="badge hidden">DEMO</span></div>
+    </header>
+
+    <main class="wrap">
+      <!-- Landing -->
+      <section id="landing" class="hero">
+        <h1>Escape vSphere. Land on Proxmox — <span class="accent">with a plan.</span></h1>
+        <p>One click inventories your vCenter, checks every VM for migration blockers, estimates the time &amp; the licensing savings, and generates a client‑ready <b>PDF assessment</b> and a per‑VM migration runbook.</p>
+        <button id="run" class="cta">▶ Run the assessment</button>
+        <div id="loading" class="loading hidden">Analysing your environment…</div>
+        <p class="fine">Runs locally. Nothing leaves your machine. Add <code>--demo</code> to try it with no vCenter.</p>
+      </section>
+
+      <!-- Results -->
+      <section id="results" class="hidden">
+        <div class="scorecard panel">
+          <div class="badge-score"><div class="n" id="score">—</div><div class="l">READINESS / 100</div></div>
+          <div class="verdict"><h2 id="verdict">—</h2><p id="summary" class="muted"></p></div>
+          <div class="downloads">
+            <a class="dl primary" href="/download/pdf" target="_blank">⤓ PDF report</a>
+            <a class="dl" href="/download/html" target="_blank">HTML</a>
+            <a class="dl" href="/download/script" target="_blank">Runbook .sh</a>
+            <a class="dl" href="/download/json" target="_blank">JSON</a>
+          </div>
+        </div>
+
+        <div class="cards" id="cards"></div>
+
+        <section class="panel">
+          <div class="panel-head"><h2>Compatibility findings</h2><span id="fcount" class="muted"></span></div>
+          <div class="table-wrap"><table class="grid"><thead><tr><th>Severity</th><th>VM</th><th>Finding &amp; remediation</th></tr></thead><tbody id="findings"></tbody></table></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head"><h2>Inventory</h2><span id="vcount" class="muted"></span></div>
+          <div class="table-wrap"><table class="grid"><thead><tr><th>Name</th><th>Guest OS</th><th>vCPU</th><th>RAM</th><th>Disk</th><th>Power</th></tr></thead><tbody id="inventory"></tbody></table></div>
+        </section>
+      </section>
+    </main>
+
+    <footer class="foot">
+      Crafted by <a href="https://soyrage.es/" target="_blank" rel="noreferrer">SoyRage Agency</a> · soyrage.es ·
+      <a class="donate" href="https://www.paypal.com/paypalme/soyrageagency" target="_blank" rel="noreferrer">Support</a> ·
+      Need a hand migrating? <a href="https://soyrage.es/" target="_blank" rel="noreferrer">Talk to us</a>.
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>
