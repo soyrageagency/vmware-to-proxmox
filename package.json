@@ -5,7 +5,14 @@
   "type": "module",
   "license": "SEE LICENSE IN LICENSE",
   "author": "SoyRage Agency (https://soyrage.es/)",
-  "homepage": "https://soyrage.es/",
+  "homepage": "https://github.com/soyrageagency/vmware-to-proxmox#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/soyrageagency/vmware-to-proxmox.git"
+  },
+  "bugs": {
+    "url": "https://github.com/soyrageagency/vmware-to-proxmox/issues"
+  },
   "funding": {
     "type": "paypal",
     "url": "https://www.paypal.com/paypalme/soyrageagency"
@@ -39,6 +46,7 @@
   },
   "scripts": {
     "build": "tsc && node scripts/copy-public.mjs",
+    "prepublishOnly": "npm run build",
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
     "assess": "node dist/index.js assess",
