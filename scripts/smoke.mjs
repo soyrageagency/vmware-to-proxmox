@@ -40,9 +40,11 @@ ok("web /api/meta responds", up);
 if (up) { const a = await (await fetch("http://127.0.0.1:4788/api/assess")).json(); assessOk = typeof a.readiness === "number" && a.findings.length > 0; }
 ok("web /api/assess returns results", assessOk);
 web.kill();
+await new Promise((r) => setTimeout(r, 150));
 rmSync("./.smoke-web", { recursive: true, force: true });
 
 let pass = 0, fail = 0;
 for (const t of results) { if (t.ok) { pass++; console.log(`  \x1b[32m✓\x1b[0m ${t.name}`); } else { fail++; console.log(`  \x1b[31m✗ ${t.name}\x1b[0m  ${t.detail}`); } }
 console.log(`\nTOTAL: ${pass} passed, ${fail} failed`);
-process.exit(fail ? 1 : 0);
+// Set the exit code and let the loop drain (avoids a libuv teardown race on Windows).
+process.exitCode = fail ? 1 : 0;

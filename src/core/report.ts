@@ -198,33 +198,51 @@ export function generateHtml(a: Assessment): string {
   const vmRows = a.inventory.vms
     .map((v) => `<tr><td>${esc(v.name)}</td><td>${esc(v.guestOs)}</td><td>${v.cpu}</td><td>${(v.memoryMb / 1024).toFixed(0)} GB</td><td>${v.disks.reduce((x, d) => x + d.sizeGb, 0)} GB</td><td>${v.powerState}</td><td>vmx-${v.hardwareVersion}</td></tr>`)
     .join("");
-  const card = (k: string, v: string) => `<div class="card"><div class="k">${k}</div><div class="v">${v}</div></div>`;
+  const IP: Record<string, string> = {
+    vm: '<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>',
+    disk: '<ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>',
+    host: '<rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="13" width="18" height="7" rx="2"/><path d="M7 7.5h.01M7 16.5h.01"/>',
+    clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    window: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v5"/>',
+    savings: '<circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.4c0-1 1.1-1.7 2.5-1.7s2.5.7 2.5 1.7-1.1 1.5-2.5 1.8-2.5.8-2.5 1.8 1.1 1.7 2.5 1.7 2.5-.7 2.5-1.7"/>',
+  };
+  const svg = (n: string) => `<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${IP[n] ?? ""}</svg>`;
+  let ci = 0;
+  const card = (k: string, v: string, ic: string) => `<div class="card t${ci++ % 4}">${svg(ic)}<div class="k">${k}</div><div class="v">${v}</div></div>`;
 
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>VMware → Proxmox Assessment · ${esc(a.inventory.vcenter)}</title>
 <style>
-:root{--accent:${ACCENT};--ink:${INK};--mute:${MUTE}}
-*{box-sizing:border-box}body{margin:0;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;color:var(--ink);background:#f4f7fb}
-.band{background:var(--accent);color:#fff;padding:28px 40px}
-.band h1{margin:0;font-size:24px}.band p{margin:4px 0 0;opacity:.9}
-.wrap{max-width:1040px;margin:-28px auto 40px;padding:0 20px}
-.panel{background:#fff;border:1px solid #e4eaf1;border-radius:14px;padding:22px 24px;margin-top:22px;box-shadow:0 6px 24px rgba(20,30,50,.05)}
-h2{font-size:16px;color:var(--accent);border-bottom:1px solid #e6ecf3;padding-bottom:8px}
+:root{--accent:#3b9ee8;--ink:#111;--mute:#8b8b86;--line:#e7e3da;--bg:#f3f1ea;--grid:rgba(17,17,17,.035)}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,'Segoe UI',system-ui,-apple-system,sans-serif;color:var(--ink);
+  background-color:var(--bg);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:46px 46px}
+.ic{width:20px;height:20px;color:rgba(17,17,17,.5)}
+.band{padding:30px 40px 22px;border-bottom:1px solid var(--line)}
+.band .brand{font-weight:800;letter-spacing:.12em;color:var(--accent);font-size:11.5px}
+.band h1{margin:.4em 0 .25em;font-size:27px;font-weight:800;letter-spacing:-.03em}.band p{margin:0;color:var(--mute);font-size:13px}
+.wrap{max-width:1040px;margin:0 auto 40px;padding:0 20px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px 24px;margin-top:16px}
+h2{font-size:13px;color:var(--mute);text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid var(--line);padding-bottom:8px;font-weight:700}
 .score{display:flex;align-items:center;gap:20px}
-.badge{width:96px;height:96px;border-radius:16px;background:#f3f6fa;display:grid;place-items:center;flex:none}
-.badge .n{font-size:34px;font-weight:800;color:${scoreColor}}.badge .l{font-size:9px;color:var(--mute);letter-spacing:1px}
+.badge{width:96px;height:96px;border-radius:16px;background:#dbe8f2;display:grid;place-items:center;flex:none}
+.badge .n{font-size:36px;font-weight:800;letter-spacing:-.03em;color:${scoreColor}}.badge .l{font-size:9px;color:rgba(17,17,17,.55);letter-spacing:1px;font-weight:700}
 .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.card{background:#f7f9fc;border-radius:10px;padding:14px 16px}.card .k{font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:.5px}.card .v{font-size:22px;font-weight:700;margin-top:4px}
-table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:9px 10px;border-bottom:1px solid #eef2f7;vertical-align:top}th{color:var(--mute);font-size:11px;text-transform:uppercase}
+.card{border:1px solid var(--line);border-radius:16px;padding:16px;position:relative;min-height:96px}
+.card .ic{position:absolute;top:15px;right:15px}
+.card .k{font-size:10px;color:rgba(17,17,17,.55);text-transform:uppercase;letter-spacing:.09em;font-weight:700}.card .v{font-size:26px;font-weight:800;letter-spacing:-.03em;margin-top:8px}
+.card.t0{background:#dbe8f2}.card.t1{background:#dcebdf}.card.t2{background:#f0ebcf}.card.t3{background:#f1ddd9}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:9px 10px;border-bottom:1px solid #f0ede5;vertical-align:top}th{color:var(--mute);font-size:10.5px;text-transform:uppercase;font-weight:700;letter-spacing:.4px}
 .pill{font-size:10px;font-weight:700;text-transform:uppercase;padding:2px 8px;border-radius:999px;color:#fff}
-.pill.blocker{background:#e0483f}.pill.warning{background:#d99a20}.pill.info{background:#2f97ee}
+.pill.blocker{background:#c8524a}.pill.warning{background:#b8892a}.pill.info{background:var(--accent)}
 .rem{color:var(--mute);font-size:12px;margin-top:2px}
 .savings{display:grid;grid-template-columns:1fr auto;gap:6px 20px;font-size:14px;max-width:460px}
-.savings .big{font-weight:800;color:${scoreColor};font-size:18px}
+.savings .big{font-weight:800;color:var(--ink);font-size:18px}
 .foot{color:var(--mute);font-size:12px;text-align:center;margin:26px 0}
-.foot a{color:var(--accent);text-decoration:none}
+.foot a{color:var(--mute);text-decoration:underline}
+@media print{body{background:#fff}}
 </style></head><body>
-<div class="band"><h1>VMware → Proxmox — Migration Assessment</h1>
+<div class="band"><div class="brand">SOYRAGE AGENCY · MIGRATION ASSESSMENT</div><h1>VMware → Proxmox — Migration Assessment</h1>
 <p>${esc(a.inventory.vcenter)} · ${esc(a.inventory.vcenterVersion)} · ${new Date().toLocaleString()}</p></div>
 <div class="wrap">
   <div class="panel"><div class="score">
@@ -233,12 +251,12 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
   </div></div>
 
   <div class="panel"><h2>At a glance</h2><div class="cards">
-    ${card("Virtual machines", String(a.estimate.totalVms))}
-    ${card("Total disk", gb(a.estimate.totalDiskGb))}
-    ${card("ESXi hosts", String(a.inventory.hosts.length))}
-    ${card("Est. wall-clock", hours(a.estimate.wallClockHours))}
-    ${card("Maintenance windows", String(a.estimate.windows))}
-    ${card("Annual savings", usd(s.annualSavings))}
+    ${card("Virtual machines", String(a.estimate.totalVms), "vm")}
+    ${card("Total disk", gb(a.estimate.totalDiskGb), "disk")}
+    ${card("ESXi hosts", String(a.inventory.hosts.length), "host")}
+    ${card("Est. wall-clock", hours(a.estimate.wallClockHours), "clock")}
+    ${card("Maintenance windows", String(a.estimate.windows), "window")}
+    ${card("Annual savings", usd(s.annualSavings), "savings")}
   </div></div>
 
   <div class="panel"><h2>Compatibility findings — ${c.blocker} blockers · ${c.warning} warnings · ${c.info} notes</h2>

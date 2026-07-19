@@ -13,6 +13,17 @@ function hrs(h) { return h < 24 ? h + " h" : Math.floor(h / 24) + " d " + Math.r
 function verdict(s) { return s >= 85 ? "Low-risk migration" : s >= 65 ? "Moderate — a few items first" : s >= 40 ? "Significant prep needed" : "High-risk — plan carefully"; }
 function scoreColor(s) { return s >= 85 ? "var(--green)" : s >= 65 ? "var(--amber)" : "var(--red)"; }
 
+// Custom, hand-drawn line icons (no icon library).
+const IP = {
+  vm: '<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>',
+  disk: '<ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>',
+  host: '<rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="13" width="18" height="7" rx="2"/><path d="M7 7.5h.01M7 16.5h.01"/>',
+  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  window: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v5"/>',
+  savings: '<circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.4c0-1 1.1-1.7 2.5-1.7s2.5.7 2.5 1.7-1.1 1.5-2.5 1.8-2.5.8-2.5 1.8 1.1 1.7 2.5 1.7 2.5-.7 2.5-1.7"/>',
+};
+const icon = (n) => `<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${IP[n] || ""}</svg>`;
+
 async function init() {
   try {
     const m = await (await fetch("/api/meta")).json();
@@ -50,14 +61,14 @@ function render(a) {
   $("#summary").textContent = `${a.inventory.vms.length} VMs · ${gb(a.estimate.totalDiskGb)} disk · ${a.inventory.hosts} hosts · ${c.blocker} blockers, ${c.warning} warnings.`;
 
   const cards = [
-    ["Virtual machines", a.estimate.totalVms],
-    ["Total disk", gb(a.estimate.totalDiskGb)],
-    ["ESXi hosts", a.inventory.hosts],
-    ["Est. wall-clock", hrs(a.estimate.wallClockHours)],
-    ["Maintenance windows", a.estimate.windows],
-    ["Annual savings", usd(s.annualSavings)],
+    ["Virtual machines", a.estimate.totalVms, "vm"],
+    ["Total disk", gb(a.estimate.totalDiskGb), "disk"],
+    ["ESXi hosts", a.inventory.hosts, "host"],
+    ["Est. wall-clock", hrs(a.estimate.wallClockHours), "clock"],
+    ["Maintenance windows", a.estimate.windows, "window"],
+    ["Annual savings", usd(s.annualSavings), "savings"],
   ];
-  $("#cards").innerHTML = cards.map(([k, v]) => `<div class="card"><div class="k">${k}</div><div class="v">${v}</div></div>`).join("");
+  $("#cards").innerHTML = cards.map(([k, v, ic], i) => `<div class="card t${i % 4}">${icon(ic)}<div class="k">${k}</div><div class="v">${v}</div></div>`).join("");
 
   $("#fcount").textContent = `${c.blocker} blockers · ${c.warning} warnings · ${c.info} notes`;
   $("#findings").innerHTML = a.findings.map((f) =>
