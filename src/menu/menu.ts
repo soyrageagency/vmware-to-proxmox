@@ -102,5 +102,9 @@ async function doInventory(config: AppConfig, log: Logger): Promise<boolean> {
 async function doWeb(config: AppConfig, log: Logger): Promise<boolean> {
   const { startWeb } = await import("../web/server.js");
   await startWeb(config, log);
-  return true; // startWeb runs until Ctrl-C
+  out(`\n  ${C.green}Web UI running${C.reset} at ${C.blue}http://${config.webHost}:${config.webPort}${C.reset}  ${C.dim}— press Ctrl-C to stop.${C.reset}\n`);
+  // startWeb resolves as soon as the server is listening; park here so the
+  // process stays alive (and the menu doesn't quit) until the user hits Ctrl-C.
+  await new Promise<void>(() => {});
+  return true; // unreachable
 }
